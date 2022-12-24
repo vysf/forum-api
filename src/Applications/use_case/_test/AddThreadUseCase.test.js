@@ -7,6 +7,7 @@ const AddThreadUseCase = require('../AddThreadUseCase');
 describe('AddThreadUseCase', () => {
   it('should orchestrating the add thread action correctly', async () => {
     // Action
+    // owner didapat dari request.auth.credentials pada handler
     const useCasePayload = {
       title: 'some title',
       body: 'lorem ipsum',
