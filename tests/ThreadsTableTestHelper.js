@@ -10,7 +10,7 @@ const ThreadsTableTestHelper = {
     date = 'Sat Dec 24 2022 14:38:54 GMT+0700 (Indochina Time)',
   }) {
     const query = {
-      text: 'INSER INTO threads VALUES($1, $2, $3, $4, $5',
+      text: 'INSERT INTO threads VALUES($1, $2, $3, $4, $5)',
       values: [id, title, body, owner, date],
     };
 

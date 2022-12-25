@@ -1,5 +1,6 @@
 const ThreadsTableTestHelper = require('../../../../tests/ThreadsTableTestHelper');
 const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
+const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 const AddedThread = require('../../../Domains/threads/entities/AddedThread');
 const NewThread = require('../../../Domains/threads/entities/NewThread');
 const pool = require('../../database/postgres/pool');
@@ -84,6 +85,71 @@ describe('ThreadRepositoryPostgres', () => {
         title: 'new title',
         owner: 'user-123',
       }));
+    });
+  });
+
+  describe('getThreadById function', () => {
+    it('should return thread correctly', async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({
+        id: 'user-123',
+        username: 'dicoding',
+        password: 'secret',
+        fullname: 'Dicoding Indonesia',
+      });
+
+      const newThread = {
+        id: 'thread-123',
+        title: 'new title',
+        body: 'lorem ipsum',
+        owner: 'user-123',
+        date: 'today',
+      };
+
+      await ThreadsTableTestHelper.addThread(newThread);
+
+      const expectedThread = {
+        id: 'thread-123',
+        title: 'new title',
+        body: 'lorem ipsum',
+        date: 'today',
+        username: 'dicoding',
+      };
+
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {}, {});
+
+      // Action
+      const getThread = await threadRepositoryPostgres.getThreadById(expectedThread.id);
+
+      // Assert
+      expect(getThread).toStrictEqual(expectedThread);
+    });
+
+    it('should return NotFoundError when thread is not found', async () => {
+      // Arrange
+      await UsersTableTestHelper.addUser({
+        id: 'user-123',
+        username: 'dicoding',
+        password: 'secret',
+        fullname: 'Dicoding Indonesia',
+      });
+
+      const newThread = {
+        id: 'thread-123',
+        title: 'new title',
+        body: 'lorem ipsum',
+        owner: 'user-123',
+        date: 'today',
+      };
+
+      await ThreadsTableTestHelper.addThread(newThread);
+
+      const threadRepositoryPostgres = new ThreadRepositoryPostgres(pool, {}, {});
+
+      // Action and Assert
+      await expect(threadRepositoryPostgres.getThreadById('thread-xyz'))
+        .rejects
+        .toThrowError(NotFoundError);
     });
   });
 });
