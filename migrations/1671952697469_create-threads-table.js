@@ -6,7 +6,7 @@ exports.up = (pgm) => {
   pgm.createTable('threads', {
     id: {
       type: 'VARCHAR(50)',
-      notNull: true,
+      primaryKey: true,
     },
     title: {
       type: 'VARCHAR(50)',
