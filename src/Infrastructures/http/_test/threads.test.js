@@ -22,7 +22,7 @@ describe('/threads endpoint', () => {
     it('should response 201 and persisted thread', async () => {
       // Arrange
       const server = await createServer(container);
-      const accessToken = await LoginTestHelper.getAccessToken(server);
+      const { accessToken } = await LoginTestHelper.getAccessToken(server);
       const requestPayload = {
         title: 'new title',
         body: 'new body',
@@ -73,7 +73,7 @@ describe('/threads endpoint', () => {
     it('should response 400 when payload not contain needed property', async () => {
       // Arrange
       const server = await createServer(container);
-      const accessToken = await LoginTestHelper.getAccessToken(server);
+      const { accessToken } = await LoginTestHelper.getAccessToken(server);
       const requestPayload = {
         title: 'new title',
       };
@@ -98,7 +98,7 @@ describe('/threads endpoint', () => {
     it('should response 400 when payload not meet data type specification', async () => {
       // Arrange
       const server = await createServer(container);
-      const accessToken = await LoginTestHelper.getAccessToken(server);
+      const { accessToken } = await LoginTestHelper.getAccessToken(server);
       const requestPayload = {
         title: 'new title',
         body: 1,

@@ -6,7 +6,7 @@ const LoginTestHelper = {
       password: 'secret',
     };
 
-    await server.inject({
+    const user = await server.inject({
       method: 'POST',
       url: '/users',
       payload: {
@@ -23,8 +23,9 @@ const LoginTestHelper = {
     });
 
     const { accessToken } = (JSON.parse(login.payload)).data;
+    const { id: userId } = (JSON.parse(user.payload)).data.addedUser;
 
-    return accessToken;
+    return { accessToken, userId };
   },
 };
 
