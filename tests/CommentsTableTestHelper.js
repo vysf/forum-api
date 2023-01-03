@@ -1,18 +1,18 @@
 /* istanbul ignore file */
 const pool = require('../src/Infrastructures/database/postgres/pool');
 
-const CommentsTableHelper = {
+const CommentsTableTestHelper = {
   async addComment({
     id = 'comment-123',
     content = 'default conntent',
-    owner = 'user-123',
     threadId = 'thread-123',
+    owner = 'user-123',
     date = 'Sat Dec 24 2022 14:38:54 GMT+0700 (Indochina Time)',
     isDelete = false,
   }) {
     const query = {
       text: 'INSERT INTO comments VALUES($1, $2, $3, $4, $5, $6)',
-      values: [id, content, threadId, isDelete, owner, date],
+      values: [id, content, threadId, owner, date, isDelete],
     };
 
     await pool.query(query);
@@ -33,4 +33,4 @@ const CommentsTableHelper = {
   },
 };
 
-module.exports = CommentsTableHelper;
+module.exports = CommentsTableTestHelper;

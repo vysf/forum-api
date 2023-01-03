@@ -7,14 +7,15 @@ const ThreadsTableTestHelper = {
     title = 'default title',
     body = 'lorem ipsum',
     owner = 'user-123',
-    date = 'Sat Dec 24 2022 14:38:54 GMT+0700 (Indochina Time)',
+    date = '2021',
   }) {
     const query = {
-      text: 'INSERT INTO threads VALUES($1, $2, $3, $4, $5)',
+      text: 'INSERT INTO threads VALUES($1, $2, $3, $4, $5) RETURNING id',
       values: [id, title, body, owner, date],
     };
 
     await pool.query(query);
+    // console.log(result.rows[0]);
   },
 
   async getThreadById(id) {
