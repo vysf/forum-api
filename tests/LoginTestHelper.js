@@ -1,8 +1,8 @@
 const LoginTestHelper = {
-  async getAccessToken(server) {
+  async getAccessToken({ server, username = 'dicoding' }) {
     // buat user baru
     const userPayload = {
-      username: 'dicoding',
+      username,
       password: 'secret',
     };
 
