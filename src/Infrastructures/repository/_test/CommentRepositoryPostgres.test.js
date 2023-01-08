@@ -63,6 +63,42 @@ describe('CommentRepositoryPostgres', () => {
     });
   });
 
+  describe('getCommentByThareadId funtion', () => {
+    it('should get all comments from a thread', async () => {
+      // Arrange
+      const userId = 'user-123';
+      const threadId = 'thread-123';
+      await ThreadsTableTestHelper.addThread({ id: threadId, owner: userId });
+
+      // buat komentar
+      const firstComment = {
+        id: 'comment-1',
+        date: '10-10-2021',
+        content: 'comment 1',
+      };
+
+      const secondComment = {
+        id: 'comment-2',
+        date: '11-10-2021',
+        content: 'comment 2',
+      };
+
+      const expectedComments = [
+        { ...firstComment, username: 'dicoding' },
+        { ...secondComment, username: 'dicoding', content: '**komentar telah dihapus**' },
+      ];
+      secondComment.isDelete = true;
+      await CommentsTableTestHelper.addComment(firstComment);
+      await CommentsTableTestHelper.addComment(secondComment);
+
+      const commentRepositoryPostgres = new CommentRepositoryPostgres(pool, {}, {});
+
+      // Action
+      const comments = await commentRepositoryPostgres.getCommentByThareadId('thread-123');
+      expect(comments).toEqual(expectedComments);
+    });
+  });
+
   describe('checkCommentIsExist function', () => {
     it('should throw NotFoundError when comment is not exist', async () => {
       // Arrange

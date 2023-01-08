@@ -26,6 +26,26 @@ class CommentRepositoryPostgres extends CommentRepository {
     return new AddedComment({ ...result.rows[0] });
   }
 
+  async getCommentByThareadId(threadId) {
+    const query = {
+      text: `SELECT comments.id,
+             CASE
+                WHEN comments.is_delete = TRUE THEN '**komentar telah dihapus**' ELSE comments.content
+             END AS content,
+             comments.date,
+             users.username
+             FROM comments
+                INNER JOIN users
+                    ON comments.owner = users.id
+                        WHERE comments.thread_id = $1
+                        ORDER BY comments.date ASC`,
+      values: [threadId],
+    };
+
+    const result = await this._pool.query(query);
+    return result.rows;
+  }
+
   async checkCommentIsExist(threadId, commentId) {
     const query = {
       text: `SELECT * FROM comments

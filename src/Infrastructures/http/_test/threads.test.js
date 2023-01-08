@@ -5,6 +5,7 @@ const pool = require('../../database/postgres/pool');
 const createServer = require('../createServer');
 const container = require('../../container');
 const LoginTestHelper = require('../../../../tests/LoginTestHelper');
+const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
 
 /* eslint-disable no-undef */
 describe('/threads endpoint', () => {
@@ -119,6 +120,78 @@ describe('/threads endpoint', () => {
       expect(response.statusCode).toEqual(400);
       expect(responseJson.status).toEqual('fail');
       expect(responseJson.message).toEqual('tidak dapat membuat thread baru karena tipe data tidak sesuai');
+    });
+  });
+
+  describe('when GET /threads/{threadId}', () => {
+    it('should response 200 and and get thread detail with comments', async () => {
+      // Arrange
+      const server = await createServer(container);
+      const threadId = 'thread-123';
+
+      await UsersTableTestHelper.addUser({ id: 'user-1', username: 'Jhon' });
+      await UsersTableTestHelper.addUser({ id: 'user-2', username: 'Jene' });
+
+      await ThreadsTableTestHelper.addThread({ id: threadId, owner: 'user-1' });
+
+      await CommentsTableTestHelper.addComment({ id: 'comment-1', owner: 'user-1', threadId });
+      await CommentsTableTestHelper.addComment({ id: 'comment-2', owner: 'user-2', threadId });
+
+      // Action
+      const response = await server.inject({
+        method: 'GET',
+        url: `/threads/${threadId}`,
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(200);
+      expect(responseJson.status).toEqual('success');
+      expect(responseJson.data).toBeDefined();
+      expect(responseJson.data.thread).toBeDefined();
+      expect(responseJson.data.thread.comments).toHaveLength(2);
+    });
+
+    it('should response 200 and and get thread detail with not comments', async () => {
+      // Arrange
+      const server = await createServer(container);
+      const threadId = 'thread-123';
+
+      await UsersTableTestHelper.addUser({ id: 'user-1', username: 'Jhon' });
+
+      await ThreadsTableTestHelper.addThread({ id: threadId, owner: 'user-1' });
+
+      // Action
+      const response = await server.inject({
+        method: 'GET',
+        url: `/threads/${threadId}`,
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(200);
+      expect(responseJson.status).toEqual('success');
+      expect(responseJson.data).toBeDefined();
+      expect(responseJson.data.thread).toBeDefined();
+      expect(responseJson.data.thread.comments).toHaveLength(0);
+    });
+
+    it('should response 404 if thread does not exists', async () => {
+      // Arrange
+      const server = await createServer(container);
+      const threadId = 'thread-123';
+
+      // Action
+      const response = await server.inject({
+        method: 'GET',
+        url: `/threads/${threadId}`,
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(404);
+      expect(responseJson.status).toEqual('fail');
+      expect(responseJson.message).toBeDefined();
     });
   });
 });
