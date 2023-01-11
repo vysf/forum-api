@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 const AddReplayUseCase = require('../AddReplayUseCase');
 const AddedReplay = require('../../../Domains/replies/entities/AddedReplay');
-const ReplayRepository = require('../../../Domains/replies/ReplyRepository');
+const ReplayRepository = require('../../../Domains/replies/ReplayRepository');
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
 const NewReplay = require('../../../Domains/replies/entities/NewReplay');
 

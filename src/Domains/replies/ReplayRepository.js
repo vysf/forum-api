@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-class ReplyRepository {
+class ReplayRepository {
   async addReplay(addedReplay) {
     throw new Error('REPLAY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
@@ -21,4 +21,4 @@ class ReplyRepository {
   }
 }
 
-module.exports = ReplyRepository;
+module.exports = ReplayRepository;
