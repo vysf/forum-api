@@ -11,11 +11,12 @@ const RepliesTableTestHelper = {
     isDelete = false,
   }) {
     const query = {
-      text: 'INSERT INTO replies VALUES($1, $2, $3, $4, $5, $6)',
+      text: 'INSERT INTO replies VALUES($1, $2, $3, $4, $5, $6) RETURNING id',
       values: [id, content, commentId, owner, date, isDelete],
     };
 
-    await pool.query(query);
+    const result = await pool.query(query);
+    return result.rows[0];
   },
 
   async getReplyById(id) {
@@ -25,6 +26,11 @@ const RepliesTableTestHelper = {
     };
 
     const result = await pool.query(query);
+    return result.rows;
+  },
+
+  async getReplies() {
+    const result = await pool.query('SELECT * FROM replies');
     return result.rows;
   },
 
