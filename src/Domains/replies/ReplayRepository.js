@@ -8,7 +8,7 @@ class ReplayRepository {
     throw new Error('REPLAY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 
-  async checkReplayIsExist(commentId, replayId) {
+  async checkReplayIsExist(threadId, commentId, replayId) {
     throw new Error('REPLAY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 

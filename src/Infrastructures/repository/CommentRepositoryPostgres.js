@@ -69,7 +69,7 @@ class CommentRepositoryPostgres extends CommentRepository {
       text: `SELECT * FROM comments
       INNER JOIN threads 
       ON comments.thread_id = threads.id
-      WHERE comments.id = $1 AND threads.id = $2`,
+      WHERE comments.id = $1 AND threads.id = $2 AND comments.is_delete = false`,
       values: [commentId, threadId],
     };
 

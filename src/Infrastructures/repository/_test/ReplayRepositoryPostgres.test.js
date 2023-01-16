@@ -139,7 +139,7 @@ describe('ReplayRepositoryPostgres', () => {
       await RepliesTableTestHelper.addReply({ id: replayId, commentId, owner: userId });
 
       // Action and Assert
-      await expect(replayRepositoryPostgres.checkReplayIsExist(commentId, replayId))
+      await expect(replayRepositoryPostgres.checkReplayIsExist(threadId, commentId, replayId))
         .resolves.not.toThrow(NotFoundError);
     });
   });

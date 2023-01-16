@@ -46,13 +46,13 @@ class ReplayRepositoryPostgres extends ReplayRepository {
     return result.rows;
   }
 
-  async checkReplayIsExist(commentId, replayId) {
+  async checkReplayIsExist(threadId, commentId, replayId) {
     const query = {
       text: `SELECT * FROM replies
       INNER JOIN comments 
       ON replies.comment_id = comments.id
-      WHERE replies.id = $1 AND comments.id = $2`,
-      values: [replayId, commentId],
+      WHERE replies.id = $1 AND replies.comment_id = $2 AND comments.thread_id = $3`,
+      values: [replayId, commentId, threadId],
     };
 
     const result = await this._pool.query(query);
