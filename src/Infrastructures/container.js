@@ -31,6 +31,8 @@ const CommentRepository = require('../Domains/comments/CommentRepository');
 const CommentRepositoryPostgres = require('./repository/CommentRepositoryPostgres');
 const DeleteCommentUseCase = require('../Applications/use_case/DeleteCommentUseCase');
 const GetThreadUseCase = require('../Applications/use_case/GetThreadUseCase');
+const ReplayRepository = require('../Domains/replies/ReplayRepository');
+const ReplayRepositoryPostgres = require('./repository/ReplayRepositoryPostgres');
 
 // creating container
 const container = createContainer();
@@ -104,6 +106,23 @@ container.register([
   {
     key: CommentRepository.name,
     Class: CommentRepositoryPostgres,
+    parameter: {
+      dependencies: [
+        {
+          concrete: pool,
+        },
+        {
+          concrete: nanoid,
+        },
+        {
+          concrete: Date,
+        },
+      ],
+    },
+  },
+  {
+    key: ReplayRepository.name,
+    Class: ReplayRepositoryPostgres,
     parameter: {
       dependencies: [
         {
