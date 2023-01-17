@@ -75,7 +75,7 @@ describe('ReplayRepositoryPostgres', () => {
     });
   });
 
-  describe('getReplayByCommentId function', () => {
+  describe('getRepliesByCommentId function', () => {
     it('should get all replies from a comment', async () => {
       // Arrange
       const userId = 'user-2';
@@ -108,7 +108,47 @@ describe('ReplayRepositoryPostgres', () => {
       const replayRepositoryPostgres = new ReplayRepositoryPostgres(pool, {}, {});
 
       // Action
-      const replies = await replayRepositoryPostgres.getReplayByCommentId('comment-1');
+      const replies = await replayRepositoryPostgres.getRepliesByCommentId('comment-1');
+      expect(replies).toEqual(expectedReplies);
+    });
+  });
+
+  describe('getRepliesByThreadId function', () => {
+    it('should get all replies in the thread', async () => {
+      // Arrange
+      // await UsersTableTestHelper.addUser({ id: 'user-2', username: 'Jene' });
+
+      await ThreadsTableTestHelper.addThread({ id: 'thread-1', owner: 'user-2' });
+
+      await CommentsTableTestHelper.addComment({ id: 'comment-1', threadId: 'thread-1', owner: 'user-1' });
+      await CommentsTableTestHelper.addComment({ id: 'comment-2', threadId: 'thread-1', owner: 'user-2' });
+
+      const firstReplay = {
+        id: 'replay-1',
+        date: '10-10-2021',
+        content: 'replay pada komen 1',
+        commentId: 'comment-1',
+      };
+
+      const secondReplay = {
+        id: 'replay-2',
+        date: '11-10-2021',
+        content: 'replay pada komen 2',
+        commentId: 'comment-2',
+      };
+
+      const expectedReplies = [
+        { ...firstReplay, username: 'Jhon' },
+        { ...secondReplay, username: 'Jene', content: '**balasan telah dihapus**' },
+      ];
+      secondReplay.isDelete = true;
+      await RepliesTableTestHelper.addReply({ ...secondReplay, owner: 'user-2' });
+      await RepliesTableTestHelper.addReply({ ...firstReplay, owner: 'user-1' });
+
+      const replayRepositoryPostgres = new ReplayRepositoryPostgres(pool, {}, {});
+
+      // Action
+      const replies = await replayRepositoryPostgres.getRepliesByThreadId('thread-1');
       expect(replies).toEqual(expectedReplies);
     });
   });

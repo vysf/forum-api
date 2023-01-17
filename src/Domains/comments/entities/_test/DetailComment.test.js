@@ -19,19 +19,21 @@ describe('DetailComment entities', () => {
       username: 'dicoding',
       date: '2021',
       content: [],
+      replies: [],
     };
 
     // Action and Assert
     expect(() => new DetailComment(payload)).toThrowError('DETAIL_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION');
   });
 
-  it('should create DetaiComment correctly', () => {
+  it('should create DetailComment correctly', () => {
     // Arrange
     const payload = {
       id: 'user-123',
       username: 'dicoding',
       date: '2021',
       content: 'content',
+      replies: [],
     };
 
     // Action
@@ -43,5 +45,6 @@ describe('DetailComment entities', () => {
     expect(detailComment.username).toEqual(payload.username);
     expect(detailComment.date).toEqual(payload.date);
     expect(detailComment.content).toEqual(payload.content);
+    expect(detailComment.replies).toEqual(payload.replies);
   });
 });

@@ -4,7 +4,11 @@ class ReplayRepository {
     throw new Error('REPLAY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 
-  async getReplayByCommentId(id) {
+  async getRepliesByCommentId(commentid) {
+    throw new Error('REPLAY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+  }
+
+  async getRepliesByThreadId(threadId) {
     throw new Error('REPLAY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   }
 

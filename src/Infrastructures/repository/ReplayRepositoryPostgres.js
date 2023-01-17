@@ -1,6 +1,7 @@
 const AuthorizationError = require('../../Commons/exceptions/AuthorizationError');
 const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 const AddedReplay = require('../../Domains/replies/entities/AddedReplay');
+const DetailReplay = require('../../Domains/replies/entities/DetailReplay');
 const ReplayRepository = require('../../Domains/replies/ReplayRepository');
 
 class ReplayRepositoryPostgres extends ReplayRepository {
@@ -26,7 +27,7 @@ class ReplayRepositoryPostgres extends ReplayRepository {
     return new AddedReplay({ ...result.rows[0] });
   }
 
-  async getReplayByCommentId(commentId) {
+  async getRepliesByCommentId(commentId) {
     const query = {
       text: `SELECT replies.id,
              CASE
@@ -46,13 +47,36 @@ class ReplayRepositoryPostgres extends ReplayRepository {
     return result.rows;
   }
 
+  async getRepliesByThreadId(threadId) {
+    const query = {
+      text: `SELECT replies.id,
+              CASE
+                WHEN replies.is_delete = TRUE THEN '**balasan telah dihapus**' ELSE replies.content
+              END AS content,
+              comments.id AS comment_id,
+              replies.date,
+              users.username
+              FROM replies
+              INNER JOIN comments 
+                ON replies.comment_id = comments.id
+                  INNER JOIN users
+                      ON replies.owner = users.id
+                          WHERE comments.thread_id = $1
+                          ORDER BY date ASC`,
+      values: [threadId],
+    };
+
+    const result = await this._pool.query(query);
+    return result.rows.map((data) => new DetailReplay({ ...data, commentId: data.comment_id }));
+  }
+
   async checkReplayIsExist(threadId, commentId, replayId) {
     const query = {
       text: `SELECT * FROM replies
-      INNER JOIN comments 
-      ON replies.comment_id = comments.id
-      WHERE replies.id = $1 AND replies.comment_id = $2 AND comments.thread_id = $3
-      AND replies.is_delete = false`,
+              INNER JOIN comments 
+                ON replies.comment_id = comments.id
+                WHERE replies.id = $1 AND replies.comment_id = $2 AND comments.thread_id = $3
+                AND replies.is_delete = false`,
       values: [replayId, commentId, threadId],
     };
 

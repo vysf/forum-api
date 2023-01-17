@@ -33,7 +33,7 @@ DomainErrorTranslator._directories = {
   'NEW_REPLAY.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tidak dapat membuat replay baru karena tipe data yang tidak sesuai'),
   'ADDED_REPLAY.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('harus mengirim id, content dan owner'),
   'ADDED_REPLAY.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tidak dapat menambahkan replay karena tipe data yang tidak sesuai'),
-  'DETAIL_REPLAY.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('harus mengirimkan id, username, date dan content'),
+  'DETAIL_REPLAY.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('harus mengirimkan id, username, date, commentId dan content'),
   'DETAIL_REPLAY.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tidak dapat menampilkan detail replay karena tipe data tidak sesuai'),
 };
 

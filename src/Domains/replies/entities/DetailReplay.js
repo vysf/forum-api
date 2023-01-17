@@ -2,28 +2,30 @@ class DetailReplay {
   constructor(payload) {
     this._verifyPayload(payload);
     const {
-      id, username, date, content,
+      id, username, date, content, commentId,
     } = payload;
 
     this.id = id;
     this.username = username;
     this.date = date;
     this.content = content;
+    this.commentId = commentId;
   }
 
   _verifyPayload(payload) {
     const {
-      id, username, date, content,
+      id, username, date, content, commentId,
     } = payload;
 
-    if (!id || !username || !date || !content) {
+    if (!id || !username || !date || !content || !commentId) {
       throw new Error('DETAIL_REPLAY.NOT_CONTAIN_NEEDED_PROPERTY');
     }
 
     if (typeof id !== 'string'
     || typeof username !== 'string'
     || typeof date !== 'string'
-    || typeof content !== 'string') {
+    || typeof content !== 'string'
+    || typeof commentId !== 'string') {
       throw new Error('DETAIL_REPLAY.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
   }

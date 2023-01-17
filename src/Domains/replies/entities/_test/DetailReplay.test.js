@@ -18,6 +18,7 @@ describe('DetailReplay entities', () => {
       id: 'replay-123',
       username: 'dicoding',
       date: '2021',
+      commentId: 2,
       content: [],
     };
 
@@ -32,6 +33,7 @@ describe('DetailReplay entities', () => {
       username: 'dicoding',
       date: '2021',
       content: 'content',
+      commentId: 'comment-1',
     };
 
     // Action
@@ -43,5 +45,6 @@ describe('DetailReplay entities', () => {
     expect(detailReplay.username).toEqual(payload.username);
     expect(detailReplay.date).toEqual(payload.date);
     expect(detailReplay.content).toEqual(payload.content);
+    expect(detailReplay.commentId).toEqual(payload.commentId);
   });
 });
