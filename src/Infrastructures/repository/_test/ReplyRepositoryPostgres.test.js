@@ -4,14 +4,14 @@ const UsersTableTestHelper = require('../../../../tests/UsersTableTestHelper');
 const RepliesTableTestHelper = require('../../../../tests/RepliesTableTestHelper');
 const CommentsTableTestHelper = require('../../../../tests/CommentsTableTestHelper');
 const pool = require('../../database/postgres/pool');
-const NewReplay = require('../../../Domains/replies/entities/NewReplay');
-const AddedReplay = require('../../../Domains/replies/entities/AddedReplay');
-const ReplayRepositoryPostgres = require('../ReplayRepositoryPostgres');
+const NewReply = require('../../../Domains/replies/entities/NewReply');
+const AddedReply = require('../../../Domains/replies/entities/AddedReply');
+const ReplyRepositoryPostgres = require('../ReplyRepositoryPostgres');
 const NotFoundError = require('../../../Commons/exceptions/NotFoundError');
 const AuthorizationError = require('../../../Commons/exceptions/AuthorizationError');
 
 // masih error di before all
-describe('ReplayRepositoryPostgres', () => {
+describe('ReplyRepositoryPostgres', () => {
   beforeAll(async () => {
     const userId = 'user-1';
     const threadId = 'thread-1';
@@ -33,8 +33,8 @@ describe('ReplayRepositoryPostgres', () => {
     await pool.end();
   });
 
-  describe('addReplay function', () => {
-    it('should add new replay and return added replay correctly', async () => {
+  describe('addReply function', () => {
+    it('should add new reply and return added reply correctly', async () => {
       // Arrange
       const userId = 'user-2';
       const threadId = 'thread-1';
@@ -43,7 +43,7 @@ describe('ReplayRepositoryPostgres', () => {
         id: 'comment-1', content: 'balasan thread 1', threadId, owner: userId,
       });
 
-      const newReplay = new NewReplay({
+      const newReply = new NewReply({
         content: 'balasan baru nih',
         owner: 'user-1',
         commentId: 'comment-1',
@@ -54,23 +54,23 @@ describe('ReplayRepositoryPostgres', () => {
         this.toISOString = () => 'Sat Dec 24 2022 14:38:54 GMT+0700 (Indochina Time)';
       }
 
-      const replayRepositoryPostgres = new ReplayRepositoryPostgres(
+      const replyRepositoryPostgres = new ReplyRepositoryPostgres(
         pool,
         fakeIdGenerator,
         fakeDateGenerator,
       );
 
       // Action
-      const addedReplay = await replayRepositoryPostgres.addReplay(newReplay);
+      const addedReply = await replyRepositoryPostgres.addReply(newReply);
 
       // Assert
-      const replay = await RepliesTableTestHelper.getReplyById(addedReplay.id);
+      const reply = await RepliesTableTestHelper.getReplyById(addedReply.id);
 
-      expect(replay).toBeDefined();
-      expect(addedReplay).toStrictEqual(new AddedReplay({
-        id: 'replay-123',
-        content: newReplay.content,
-        owner: newReplay.owner,
+      expect(reply).toBeDefined();
+      expect(addedReply).toStrictEqual(new AddedReply({
+        id: 'reply-123',
+        content: newReply.content,
+        owner: newReply.owner,
       }));
     });
   });
@@ -85,30 +85,30 @@ describe('ReplayRepositoryPostgres', () => {
         id: 'comment-1', content: 'balasan thread 1', threadId, owner: userId,
       });
 
-      const firstReplay = {
-        id: 'replay-1',
+      const firstReply = {
+        id: 'reply-1',
         date: '10-10-2021',
-        content: 'replay 1',
+        content: 'reply 1',
       };
 
-      const secondReplay = {
-        id: 'replay-2',
+      const secondReply = {
+        id: 'reply-2',
         date: '11-10-2021',
-        content: 'replay 2',
+        content: 'reply 2',
       };
 
       const expectedReplies = [
-        { ...firstReplay, username: 'Jhon' },
-        { ...secondReplay, username: 'Jene', content: '**balasan telah dihapus**' },
+        { ...firstReply, username: 'Jhon' },
+        { ...secondReply, username: 'Jene', content: '**balasan telah dihapus**' },
       ];
-      secondReplay.isDelete = true;
-      await RepliesTableTestHelper.addReply({ ...secondReplay, owner: userId, commentId: 'comment-1' });
-      await RepliesTableTestHelper.addReply({ ...firstReplay, owner: 'user-1', commentId: 'comment-1' });
+      secondReply.isDelete = true;
+      await RepliesTableTestHelper.addReply({ ...secondReply, owner: userId, commentId: 'comment-1' });
+      await RepliesTableTestHelper.addReply({ ...firstReply, owner: 'user-1', commentId: 'comment-1' });
 
-      const replayRepositoryPostgres = new ReplayRepositoryPostgres(pool, {}, {});
+      const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {}, {});
 
       // Action
-      const replies = await replayRepositoryPostgres.getRepliesByCommentId('comment-1');
+      const replies = await replyRepositoryPostgres.getRepliesByCommentId('comment-1');
       expect(replies).toEqual(expectedReplies);
     });
   });
@@ -123,49 +123,49 @@ describe('ReplayRepositoryPostgres', () => {
       await CommentsTableTestHelper.addComment({ id: 'comment-1', threadId: 'thread-1', owner: 'user-1' });
       await CommentsTableTestHelper.addComment({ id: 'comment-2', threadId: 'thread-1', owner: 'user-2' });
 
-      const firstReplay = {
-        id: 'replay-1',
+      const firstReply = {
+        id: 'reply-1',
         date: '10-10-2021',
-        content: 'replay pada komen 1',
+        content: 'reply pada komen 1',
         commentId: 'comment-1',
       };
 
-      const secondReplay = {
-        id: 'replay-2',
+      const secondReply = {
+        id: 'reply-2',
         date: '11-10-2021',
-        content: 'replay pada komen 2',
+        content: 'reply pada komen 2',
         commentId: 'comment-2',
       };
 
       const expectedReplies = [
-        { ...firstReplay, username: 'Jhon' },
-        { ...secondReplay, username: 'Jene', content: '**balasan telah dihapus**' },
+        { ...firstReply, username: 'Jhon' },
+        { ...secondReply, username: 'Jene', content: '**balasan telah dihapus**' },
       ];
-      secondReplay.isDelete = true;
-      await RepliesTableTestHelper.addReply({ ...secondReplay, owner: 'user-2' });
-      await RepliesTableTestHelper.addReply({ ...firstReplay, owner: 'user-1' });
+      secondReply.isDelete = true;
+      await RepliesTableTestHelper.addReply({ ...secondReply, owner: 'user-2' });
+      await RepliesTableTestHelper.addReply({ ...firstReply, owner: 'user-1' });
 
-      const replayRepositoryPostgres = new ReplayRepositoryPostgres(pool, {}, {});
+      const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {}, {});
 
       // Action
-      const replies = await replayRepositoryPostgres.getRepliesByThreadId('thread-1');
+      const replies = await replyRepositoryPostgres.getRepliesByThreadId('thread-1');
       expect(replies).toEqual(expectedReplies);
     });
   });
 
-  describe('checkReplayIsExist function', () => {
-    it('should throw NotFoundError when replay is not exist', async () => {
+  describe('checkReplyIsExist function', () => {
+    it('should throw NotFoundError when reply is not exist', async () => {
       // Arrange
-      const replayRepositoryPostgres = new ReplayRepositoryPostgres(pool, {}, {});
+      const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {}, {});
 
       // Action and Assert
-      await expect(replayRepositoryPostgres.checkReplayIsExist('comment-1', 'replay-1'))
+      await expect(replyRepositoryPostgres.checkReplyIsExist('comment-1', 'reply-1'))
         .rejects.toThrow(NotFoundError);
     });
 
-    it('should not throw NotFoundError when replay is exist', async () => {
+    it('should not throw NotFoundError when reply is exist', async () => {
       // Arrange
-      const replayRepositoryPostgres = new ReplayRepositoryPostgres(pool, {}, {});
+      const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {}, {});
 
       // const user = await UsersTableTestHelper.findUsersById('user-1');
       // console.log(user);
@@ -173,81 +173,81 @@ describe('ReplayRepositoryPostgres', () => {
       const userId = 'user-1';
       const threadId = 'thread-123';
       const commentId = 'comment-123';
-      const replayId = 'replay-1';
+      const replyId = 'reply-1';
       await ThreadsTableTestHelper.addThread({ id: threadId, owner: userId });
       await CommentsTableTestHelper.addComment({ id: commentId, threadId, owner: userId });
-      await RepliesTableTestHelper.addReply({ id: replayId, commentId, owner: userId });
+      await RepliesTableTestHelper.addReply({ id: replyId, commentId, owner: userId });
 
       // Action and Assert
-      await expect(replayRepositoryPostgres.checkReplayIsExist(threadId, commentId, replayId))
+      await expect(replyRepositoryPostgres.checkReplyIsExist(threadId, commentId, replyId))
         .resolves.not.toThrow(NotFoundError);
     });
   });
 
-  describe('verifyReplayAccess function', () => {
+  describe('verifyReplyAccess function', () => {
     it('should throw AuthorizationError when access denied', async () => {
       // Arrange
-      const replayRepositoryPostgres = new ReplayRepositoryPostgres(pool, {}, {});
+      const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {}, {});
 
       const userId = 'user-1';
       const threadId = 'thread-123';
       const commentId = 'comment-123';
-      const replayId = 'replay-1';
+      const replyId = 'reply-1';
       await ThreadsTableTestHelper.addThread({ id: threadId, owner: userId });
       await CommentsTableTestHelper.addComment({ id: commentId, threadId, owner: userId });
-      await RepliesTableTestHelper.addReply({ id: replayId, commentId, owner: userId });
+      await RepliesTableTestHelper.addReply({ id: replyId, commentId, owner: userId });
 
       // Action and Assert
-      await expect(replayRepositoryPostgres.verifyReplayAccess(replayId, 'user-xxx'))
+      await expect(replyRepositoryPostgres.verifyReplyAccess(replyId, 'user-xxx'))
         .rejects.toThrow(AuthorizationError);
     });
 
     it('should not throw AuthorizationError when access accepted', async () => {
       // Arrange
-      const replayRepositoryPostgres = new ReplayRepositoryPostgres(pool, {}, {});
+      const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {}, {});
 
       const userId = 'user-1';
       const threadId = 'thread-123';
       const commentId = 'comment-123';
-      const replayId = 'replay-1';
+      const replyId = 'reply-1';
       await ThreadsTableTestHelper.addThread({ id: threadId, owner: userId });
       await CommentsTableTestHelper.addComment({ id: commentId, threadId, owner: userId });
-      await RepliesTableTestHelper.addReply({ id: replayId, commentId, owner: userId });
+      await RepliesTableTestHelper.addReply({ id: replyId, commentId, owner: userId });
 
       // Action and Assert
-      await expect(replayRepositoryPostgres.verifyReplayAccess(replayId, userId))
+      await expect(replyRepositoryPostgres.verifyReplyAccess(replyId, userId))
         .resolves.not.toThrow(AuthorizationError);
     });
   });
 
-  describe('deleteReplayById function', () => {
-    it('should throw NotFoundError when replay that want to delete is not exist', async () => {
+  describe('deleteReplyById function', () => {
+    it('should throw NotFoundError when reply that want to delete is not exist', async () => {
       // Arrange
-      const replayRepositoryPostgres = new ReplayRepositoryPostgres(pool, {}, {});
+      const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {}, {});
 
       // Action and Assert
-      await expect(replayRepositoryPostgres.deleteReplayById('replay-xxx'))
+      await expect(replyRepositoryPostgres.deleteReplyById('reply-xxx'))
         .rejects.toThrow(NotFoundError);
     });
 
-    it('should be able to delete replay', async () => {
+    it('should be able to delete reply', async () => {
       // Arrange
-      const replayRepositoryPostgres = new ReplayRepositoryPostgres(pool, {}, {});
+      const replyRepositoryPostgres = new ReplyRepositoryPostgres(pool, {}, {});
 
       const userId = 'user-1';
       const threadId = 'thread-123';
       const commentId = 'comment-123';
-      const replayId = 'replay-1';
+      const replyId = 'reply-1';
       await ThreadsTableTestHelper.addThread({ id: threadId, owner: userId });
       await CommentsTableTestHelper.addComment({ id: commentId, threadId, owner: userId });
-      await RepliesTableTestHelper.addReply({ id: replayId, commentId, owner: userId });
+      await RepliesTableTestHelper.addReply({ id: replyId, commentId, owner: userId });
 
       // Action
-      await replayRepositoryPostgres.deleteReplayById(replayId);
-      const replay = await RepliesTableTestHelper.getReplyById(replayId);
+      await replyRepositoryPostgres.deleteReplyById(replyId);
+      const reply = await RepliesTableTestHelper.getReplyById(replyId);
 
       // Assert
-      expect(replay[0].is_delete).toEqual(true);
+      expect(reply[0].is_delete).toEqual(true);
     });
   });
 });

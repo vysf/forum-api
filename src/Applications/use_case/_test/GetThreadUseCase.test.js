@@ -2,10 +2,10 @@
 const GetThreadUseCase = require('../GetThreadUseCase');
 const ThreadRepository = require('../../../Domains/threads/ThreadRepository');
 const CommentRepository = require('../../../Domains/comments/CommentRepository');
-const ReplayRepository = require('../../../Domains/replies/ReplayRepository');
+const ReplyRepository = require('../../../Domains/replies/ReplyRepository');
 const DetailThread = require('../../../Domains/threads/entities/DetailThread');
 const DetailComment = require('../../../Domains/comments/entities/DetailComment');
-const DetailReplay = require('../../../Domains/replies/entities/DetailReplay');
+const DetailReply = require('../../../Domains/replies/entities/DetailReply');
 
 describe('GetThreadUseCase', () => {
   it('should orchestrating the get thread action correctly', async () => {
@@ -43,15 +43,15 @@ describe('GetThreadUseCase', () => {
     ];
 
     const expectedRepliesDetail = [
-      new DetailReplay({
-        id: 'replay-1',
+      new DetailReply({
+        id: 'reply-1',
         commentId: 'comment-1',
         username: 'Jhon',
         content: 'balasan komen 1',
         date: '2022',
       }),
-      new DetailReplay({
-        id: 'replay-2',
+      new DetailReply({
+        id: 'reply-2',
         commentId: 'comment-2',
         username: 'Jhon',
         content: 'balasan komen 2',
@@ -59,29 +59,29 @@ describe('GetThreadUseCase', () => {
       }),
     ];
 
-    const { commentId: commentIdReplay1, ...filteredReplayDetails1 } = expectedRepliesDetail[0];
-    const { commentId: commentIdReplay2, ...filteredReplayDetails2 } = expectedRepliesDetail[1];
+    const { commentId: commentIdReply1, ...filteredReplyDetails1 } = expectedRepliesDetail[0];
+    const { commentId: commentIdReply2, ...filteredReplyDetails2 } = expectedRepliesDetail[1];
 
     const expectedCommentsAndReplies = [
-      { ...expectedCommentsDetail[0], replies: [filteredReplayDetails1] },
-      { ...expectedCommentsDetail[1], replies: [filteredReplayDetails2] },
+      { ...expectedCommentsDetail[0], replies: [filteredReplyDetails1] },
+      { ...expectedCommentsDetail[1], replies: [filteredReplyDetails2] },
     ];
 
     const mockThreadRepository = new ThreadRepository();
     const mockCommentRepository = new CommentRepository();
-    const mockReplayRepository = new ReplayRepository();
+    const mockReplyRepository = new ReplyRepository();
 
     mockThreadRepository.getThreadById = jest.fn()
       .mockImplementation(() => Promise.resolve(expectedDetaiThread));
     mockCommentRepository.getCommentByThareadId = jest.fn()
       .mockImplementation(() => Promise.resolve(expectedCommentsDetail));
-    mockReplayRepository.getRepliesByThreadId = jest.fn()
+    mockReplyRepository.getRepliesByThreadId = jest.fn()
       .mockImplementation(() => Promise.resolve(expectedRepliesDetail));
 
     const getThreadUseCase = new GetThreadUseCase({
       threadRepository: mockThreadRepository,
       commentRepository: mockCommentRepository,
-      replayRepository: mockReplayRepository,
+      replyRepository: mockReplyRepository,
     });
 
     // Action
@@ -93,6 +93,6 @@ describe('GetThreadUseCase', () => {
     }));
     expect(mockThreadRepository.getThreadById).toBeCalledWith(useCaseParams.threadId);
     expect(mockCommentRepository.getCommentByThareadId).toBeCalledWith(useCaseParams.threadId);
-    expect(mockReplayRepository.getRepliesByThreadId).toBeCalledWith(useCaseParams.threadId);
+    expect(mockReplyRepository.getRepliesByThreadId).toBeCalledWith(useCaseParams.threadId);
   });
 });

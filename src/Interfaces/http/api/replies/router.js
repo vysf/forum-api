@@ -2,15 +2,15 @@ const routes = (handler) => [
   {
     method: 'POST',
     path: '/threads/{threadId}/comments/{commentId}/replies',
-    handler: (request, h) => handler.postReplayHandler(request, h),
+    handler: (request, h) => handler.postReplyHandler(request, h),
     options: {
       auth: 'forumapi_jwt',
     },
   },
   {
     method: 'DELETE',
-    path: '/threads/{threadId}/comments/{commentId}/replies/{replayId}',
-    handler: (request, h) => handler.deleteReplayHandler(request, h),
+    path: '/threads/{threadId}/comments/{commentId}/replies/{replyId}',
+    handler: (request, h) => handler.deleteReplyHandler(request, h),
     options: {
       auth: 'forumapi_jwt',
     },

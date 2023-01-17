@@ -1,34 +1,34 @@
-const AddReplayUseCase = require('../../../../Applications/use_case/AddReplayUseCase');
-const DeleteReplayUseCase = require('../../../../Applications/use_case/DeleteReplayUseCase');
+const AddReplyUseCase = require('../../../../Applications/use_case/AddReplyUseCase');
+const DeleteReplyUseCase = require('../../../../Applications/use_case/DeleteReplyUseCase');
 
 class RepliesHandler {
   constructor(container) {
     this._container = container;
   }
 
-  async postReplayHandler(request, h) {
+  async postReplyHandler(request, h) {
     const { id: owner } = request.auth.credentials;
 
-    const addReplayUseCase = this._container.getInstance(AddReplayUseCase.name);
-    const addedReplay = await addReplayUseCase
+    const addReplyUseCase = this._container.getInstance(AddReplyUseCase.name);
+    const addedReply = await addReplyUseCase
       .execute({ ...request.payload, owner }, request.params);
 
     const response = h.response({
       status: 'success',
       data: {
-        addedReplay,
+        addedReply,
       },
     });
 
-    response.code(200);
+    response.code(201);
     return response;
   }
 
-  async deleteReplayHandler(request, h) {
+  async deleteReplyHandler(request, h) {
     const { id: owner } = request.auth.credentials;
 
-    const deleteReplayUseCase = this._container.getInstance(DeleteReplayUseCase.name);
-    await deleteReplayUseCase.execute({ owner }, request.params);
+    const deleteReplyUseCase = this._container.getInstance(DeleteReplyUseCase.name);
+    await deleteReplyUseCase.execute({ owner }, request.params);
 
     const response = h.response({
       status: 'success',

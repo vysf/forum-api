@@ -25,9 +25,9 @@ const ThreadRepositoryPostgres = require('./repository/ThreadRepositoryPostgres'
 const CommentRepository = require('../Domains/comments/CommentRepository');
 const CommentRepositoryPostgres = require('./repository/CommentRepositoryPostgres');
 
-// replay repository
-const ReplayRepository = require('../Domains/replies/ReplayRepository');
-const ReplayRepositoryPostgres = require('./repository/ReplayRepositoryPostgres');
+// reply repository
+const ReplyRepository = require('../Domains/replies/ReplyRepository');
+const ReplyRepositoryPostgres = require('./repository/ReplyRepositoryPostgres');
 
 // password helper
 const PasswordHash = require('../Applications/security/PasswordHash');
@@ -56,9 +56,9 @@ const GetThreadUseCase = require('../Applications/use_case/GetThreadUseCase');
 const AddCommentUseCase = require('../Applications/use_case/AddCommentUseCase');
 const DeleteCommentUseCase = require('../Applications/use_case/DeleteCommentUseCase');
 
-// replay use case
-const AddReplayUseCase = require('../Applications/use_case/AddReplayUseCase');
-const DeleteReplayUseCase = require('../Applications/use_case/DeleteReplayUseCase');
+// reply use case
+const AddReplyUseCase = require('../Applications/use_case/AddReplyUseCase');
+const DeleteReplyUseCase = require('../Applications/use_case/DeleteReplyUseCase');
 
 // creating container
 const container = createContainer();
@@ -147,8 +147,8 @@ container.register([
     },
   },
   {
-    key: ReplayRepository.name,
-    Class: ReplayRepositoryPostgres,
+    key: ReplyRepository.name,
+    Class: ReplyRepositoryPostgres,
     parameter: {
       dependencies: [
         {
@@ -267,8 +267,8 @@ container.register([
           internal: CommentRepository.name,
         },
         {
-          name: 'replayRepository',
-          internal: ReplayRepository.name,
+          name: 'replyRepository',
+          internal: ReplyRepository.name,
         },
       ],
     },
@@ -304,31 +304,35 @@ container.register([
     },
   },
   {
-    key: AddReplayUseCase.name,
-    Class: AddReplayUseCase,
+    key: AddReplyUseCase.name,
+    Class: AddReplyUseCase,
     parameter: {
       injectType: 'destructuring',
       dependencies: [
         {
-          name: 'replayRepository',
-          internal: ReplayRepository.name,
+          name: 'replyRepository',
+          internal: ReplyRepository.name,
         },
         {
           name: 'commentRepository',
           internal: CommentRepository.name,
         },
+        {
+          name: 'threadRepository',
+          internal: ThreadRepository.name,
+        },
       ],
     },
   },
   {
-    key: DeleteReplayUseCase.name,
-    Class: DeleteReplayUseCase,
+    key: DeleteReplyUseCase.name,
+    Class: DeleteReplyUseCase,
     parameter: {
       injectType: 'destructuring',
       dependencies: [
         {
-          name: 'replayRepository',
-          internal: ReplayRepository.name,
+          name: 'replyRepository',
+          internal: ReplyRepository.name,
         },
       ],
     },

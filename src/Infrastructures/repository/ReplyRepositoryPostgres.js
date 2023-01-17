@@ -1,10 +1,10 @@
 const AuthorizationError = require('../../Commons/exceptions/AuthorizationError');
 const NotFoundError = require('../../Commons/exceptions/NotFoundError');
-const AddedReplay = require('../../Domains/replies/entities/AddedReplay');
-const DetailReplay = require('../../Domains/replies/entities/DetailReplay');
-const ReplayRepository = require('../../Domains/replies/ReplayRepository');
+const AddedReply = require('../../Domains/replies/entities/AddedReply');
+const DetailReply = require('../../Domains/replies/entities/DetailReply');
+const ReplyRepository = require('../../Domains/replies/ReplyRepository');
 
-class ReplayRepositoryPostgres extends ReplayRepository {
+class ReplyRepositoryPostgres extends ReplyRepository {
   constructor(pool, idGenerator, dateGenerator) {
     super();
     this._pool = pool;
@@ -12,9 +12,9 @@ class ReplayRepositoryPostgres extends ReplayRepository {
     this._dateGenerator = dateGenerator;
   }
 
-  async addReplay(addedReplay) {
-    const { content, owner, commentId } = addedReplay;
-    const id = `replay-${this._idGenerator(16)}`;
+  async addReply(addedReply) {
+    const { content, owner, commentId } = addedReply;
+    const id = `reply-${this._idGenerator(16)}`;
     const date = new this._dateGenerator().toISOString();
 
     const query = {
@@ -24,7 +24,7 @@ class ReplayRepositoryPostgres extends ReplayRepository {
 
     const result = await this._pool.query(query);
 
-    return new AddedReplay({ ...result.rows[0] });
+    return new AddedReply({ ...result.rows[0] });
   }
 
   async getRepliesByCommentId(commentId) {
@@ -67,30 +67,30 @@ class ReplayRepositoryPostgres extends ReplayRepository {
     };
 
     const result = await this._pool.query(query);
-    return result.rows.map((data) => new DetailReplay({ ...data, commentId: data.comment_id }));
+    return result.rows.map((data) => new DetailReply({ ...data, commentId: data.comment_id }));
   }
 
-  async checkReplayIsExist(threadId, commentId, replayId) {
+  async checkReplyIsExist(threadId, commentId, replyId) {
     const query = {
       text: `SELECT * FROM replies
               INNER JOIN comments 
                 ON replies.comment_id = comments.id
                 WHERE replies.id = $1 AND replies.comment_id = $2 AND comments.thread_id = $3
                 AND replies.is_delete = false`,
-      values: [replayId, commentId, threadId],
+      values: [replyId, commentId, threadId],
     };
 
     const result = await this._pool.query(query);
 
     if (!result.rowCount) {
-      throw new NotFoundError('replay tidak ditemukan');
+      throw new NotFoundError('reply tidak ditemukan');
     }
   }
 
-  async verifyReplayAccess(replayId, owner) {
+  async verifyReplyAccess(replyId, owner) {
     const query = {
       text: 'SELECT * FROM replies WHERE id = $1 AND owner = $2',
-      values: [replayId, owner],
+      values: [replyId, owner],
     };
 
     const result = await this._pool.query(query);
@@ -100,18 +100,18 @@ class ReplayRepositoryPostgres extends ReplayRepository {
     }
   }
 
-  async deleteReplayById(replayId) {
+  async deleteReplyById(replyId) {
     const query = {
       text: 'UPDATE replies SET is_delete = TRUE WHERE id = $1 RETURNING id',
-      values: [replayId],
+      values: [replyId],
     };
 
     const result = await this._pool.query(query);
 
     if (!result.rowCount) {
-      throw new NotFoundError('replay tidak ditemukan');
+      throw new NotFoundError('reply tidak ditemukan');
     }
   }
 }
 
-module.exports = ReplayRepositoryPostgres;
+module.exports = ReplyRepositoryPostgres;

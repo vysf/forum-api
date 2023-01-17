@@ -1,4 +1,4 @@
-class DetailReplay {
+class DetailReply {
   constructor(payload) {
     this._verifyPayload(payload);
     const {
@@ -18,7 +18,7 @@ class DetailReplay {
     } = payload;
 
     if (!id || !username || !date || !content || !commentId) {
-      throw new Error('DETAIL_REPLAY.NOT_CONTAIN_NEEDED_PROPERTY');
+      throw new Error('DETAIL_REPLY.NOT_CONTAIN_NEEDED_PROPERTY');
     }
 
     if (typeof id !== 'string'
@@ -26,9 +26,9 @@ class DetailReplay {
     || typeof date !== 'string'
     || typeof content !== 'string'
     || typeof commentId !== 'string') {
-      throw new Error('DETAIL_REPLAY.NOT_MEET_DATA_TYPE_SPECIFICATION');
+      throw new Error('DETAIL_REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION');
     }
   }
 }
 
-module.exports = DetailReplay;
+module.exports = DetailReply;

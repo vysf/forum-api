@@ -1,17 +1,17 @@
 /* eslint-disable no-undef */
-const ReplayRepository = require('../ReplayRepository');
+const ReplyRepository = require('../ReplyRepository');
 
 describe('ReplyRepository interface', () => {
   it('should throw error when invoke unimplemented method', async () => {
     // Arrange
-    const replayRepository = new ReplayRepository();
+    const replyRepository = new ReplyRepository();
 
     // Action and Assert
-    await expect(() => replayRepository.addReplay({})).rejects.toThrowError('REPLAY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
-    await expect(() => replayRepository.getRepliesByCommentId('')).rejects.toThrowError('REPLAY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
-    await expect(() => replayRepository.getRepliesByThreadId('')).rejects.toThrowError('REPLAY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
-    await expect(() => replayRepository.checkReplayIsExist('', '')).rejects.toThrowError('REPLAY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
-    await expect(() => replayRepository.verifyReplayAccess('', '')).rejects.toThrowError('REPLAY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
-    await expect(() => replayRepository.deleteReplayById('', '')).rejects.toThrowError('REPLAY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+    await expect(() => replyRepository.addReply({})).rejects.toThrowError('REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+    await expect(() => replyRepository.getRepliesByCommentId('')).rejects.toThrowError('REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+    await expect(() => replyRepository.getRepliesByThreadId('')).rejects.toThrowError('REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+    await expect(() => replyRepository.checkReplyIsExist('', '')).rejects.toThrowError('REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+    await expect(() => replyRepository.verifyReplyAccess('', '')).rejects.toThrowError('REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
+    await expect(() => replyRepository.deleteReplyById('', '')).rejects.toThrowError('REPLY_REPOSITORY.METHOD_NOT_IMPLEMENTED');
   });
 });

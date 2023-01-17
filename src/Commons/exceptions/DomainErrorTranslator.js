@@ -29,12 +29,12 @@ DomainErrorTranslator._directories = {
   'ADDED_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tidak dapat menambahkan comment karena tipe data yang tidak sesuai'),
   'DETAIL_COMMENT.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('harus mengirimkan id, username, date dan content'),
   'DETAIL_COMMENT.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tidak dapat menampilkan detail comment karena tipe data tidak sesuai'),
-  'NEW_REPLAY.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('harus mengirimkan content, owner dan commentId'),
-  'NEW_REPLAY.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tidak dapat membuat replay baru karena tipe data yang tidak sesuai'),
-  'ADDED_REPLAY.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('harus mengirim id, content dan owner'),
-  'ADDED_REPLAY.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tidak dapat menambahkan replay karena tipe data yang tidak sesuai'),
-  'DETAIL_REPLAY.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('harus mengirimkan id, username, date, commentId dan content'),
-  'DETAIL_REPLAY.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tidak dapat menampilkan detail replay karena tipe data tidak sesuai'),
+  'NEW_REPLY.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('harus mengirimkan content, owner dan commentId'),
+  'NEW_REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tidak dapat membuat reply baru karena tipe data yang tidak sesuai'),
+  'ADDED_REPLY.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('harus mengirim id, content dan owner'),
+  'ADDED_REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tidak dapat menambahkan reply karena tipe data yang tidak sesuai'),
+  'DETAIL_REPLY.NOT_CONTAIN_NEEDED_PROPERTY': new InvariantError('harus mengirimkan id, username, date, commentId dan content'),
+  'DETAIL_REPLY.NOT_MEET_DATA_TYPE_SPECIFICATION': new InvariantError('tidak dapat menampilkan detail reply karena tipe data tidak sesuai'),
 };
 
 module.exports = DomainErrorTranslator;
