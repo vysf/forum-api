@@ -51,7 +51,8 @@ class ReplayRepositoryPostgres extends ReplayRepository {
       text: `SELECT * FROM replies
       INNER JOIN comments 
       ON replies.comment_id = comments.id
-      WHERE replies.id = $1 AND replies.comment_id = $2 AND comments.thread_id = $3`,
+      WHERE replies.id = $1 AND replies.comment_id = $2 AND comments.thread_id = $3
+      AND replies.is_delete = false`,
       values: [replayId, commentId, threadId],
     };
 

@@ -114,4 +114,69 @@ describe('/replies endpoint', () => {
       expect(responseJson.message).toBeDefined();
     });
   });
+
+  describe('when post /threads/{threadId}/comments/{commentId}/replies/{replayId}', () => {
+    it('should response 200 and delete replay', async () => {
+      // Arrange
+      const server = await createServer(container);
+      const { accessToken, userId } = await LoginTestHelper.getAccessToken({ server });
+
+      const threadId = 'thread-1';
+      const commentId = 'comment-1';
+      const replayId = 'replay-1';
+      await ThreadsTableTestHelper.addThread({ id: threadId, owner: userId });
+      await CommentsTableTestHelper.addComment({ id: commentId, owner: userId, threadId });
+      await RepliesTableTestHelper.addReply({ id: replayId, commentId, owner: userId });
+
+      // Action
+      const response = await server.inject({
+        method: 'DELETE',
+        url: `/threads/${threadId}/comments/${commentId}/replies/${replayId}`,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(200);
+      expect(responseJson.status).toEqual('success');
+    });
+
+    it('should response 403 when not replay owner', async () => {
+      // Arrange
+      const server = await createServer(container);
+
+      const {
+        userId: jhonId,
+      } = await LoginTestHelper.getAccessToken({ server, username: 'Jhon' });
+
+      const threadId = 'thread-1';
+      const commentId = 'comment-1';
+      const replayId = 'replay-1';
+
+      await ThreadsTableTestHelper.addThread({ id: threadId, owner: jhonId });
+      await CommentsTableTestHelper.addComment({ id: commentId, owner: jhonId, threadId });
+      await RepliesTableTestHelper.addReply({ id: replayId, commentId, owner: jhonId });
+
+      const {
+        accessToken: jeneToken,
+      } = await LoginTestHelper.getAccessToken({ server, username: 'Jene' });
+
+      // Action
+      const response = await server.inject({
+        method: 'DELETE',
+        url: `/threads/${threadId}/comments/${commentId}/replies/${replayId}`,
+        headers: {
+          Authorization: `Bearer ${jeneToken}`,
+        },
+      });
+
+      // Assert
+      const responseJson = JSON.parse(response.payload);
+      expect(response.statusCode).toEqual(403);
+      expect(responseJson.status).toEqual('fail');
+      expect(responseJson.message).toBeDefined();
+    });
+  });
 });

@@ -34,6 +34,7 @@ const GetThreadUseCase = require('../Applications/use_case/GetThreadUseCase');
 const ReplayRepository = require('../Domains/replies/ReplayRepository');
 const ReplayRepositoryPostgres = require('./repository/ReplayRepositoryPostgres');
 const AddReplayUseCase = require('../Applications/use_case/AddReplayUseCase');
+const DeleteReplayUseCase = require('../Applications/use_case/DeleteReplayUseCase');
 
 // creating container
 const container = createContainer();
@@ -287,6 +288,19 @@ container.register([
         {
           name: 'commentRepository',
           internal: CommentRepository.name,
+        },
+      ],
+    },
+  },
+  {
+    key: DeleteReplayUseCase.name,
+    Class: DeleteReplayUseCase,
+    parameter: {
+      injectType: 'destructuring',
+      dependencies: [
+        {
+          name: 'replayRepository',
+          internal: ReplayRepository.name,
         },
       ],
     },
