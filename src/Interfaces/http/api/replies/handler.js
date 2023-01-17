@@ -4,9 +4,6 @@ const DeleteReplayUseCase = require('../../../../Applications/use_case/DeleteRep
 class RepliesHandler {
   constructor(container) {
     this._container = container;
-
-    this.postReplayHandler = this.postReplayHandler.bind(this);
-    this.deleteReplayHandler = this.deleteReplayHandler.bind(this);
   }
 
   async postReplayHandler(request, h) {
