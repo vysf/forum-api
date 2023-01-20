@@ -117,19 +117,21 @@ describe('CommentRepositoryPostgres', () => {
         id: 'comment-1',
         date: '10-10-2021',
         content: 'comment 1',
+        isDelete: false,
       };
 
       const secondComment = {
         id: 'comment-2',
         date: '11-10-2021',
         content: 'comment 2',
+        isDelete: true,
       };
 
       const expectedComments = [
         { ...firstComment, username: 'dicoding' },
-        { ...secondComment, username: 'dicoding', content: '**komentar telah dihapus**' },
+        { ...secondComment, username: 'dicoding' },
       ];
-      secondComment.isDelete = true;
+      // secondComment.isDelete = true;
       await CommentsTableTestHelper.addComment(firstComment);
       await CommentsTableTestHelper.addComment(secondComment);
 

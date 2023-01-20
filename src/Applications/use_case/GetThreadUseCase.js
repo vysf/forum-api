@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+const DetailComment = require('../../Domains/comments/entities/DetailComment');
 const DetailThread = require('../../Domains/threads/entities/DetailThread');
 
 class GetThreadUseCase {
@@ -10,15 +12,22 @@ class GetThreadUseCase {
   async execute(useCaseParams) {
     const { threadId } = useCaseParams;
 
-    const threadDetail = await this._threadRepository.getThreadById(threadId);
+    const threadDetail = await this._threadRepository.verifyThreadAvailability(threadId);
     threadDetail.comments = await this._commentRepository.getCommentByThareadId(threadId);
     const threadReplies = await this._replyRepository.getRepliesByThreadId(threadId);
 
-    const commentsDetail = threadDetail.comments;
+    // const commentsDetail = threadDetail.comments;
+    const commentsDetail = threadDetail.comments.map((comment) => {
+      comment.content = comment.isDelete === true ? '**komentar telah dihapus**' : comment.content;
+      const { isDelete, ...commentDetail } = comment;
+      return new DetailComment({ ...commentDetail, replies: [] });
+    });
 
-    for (let i = 0; i < commentsDetail.length; i += 1) {
-      commentsDetail[i].replies = threadReplies
-        .filter((reply) => reply.commentId === commentsDetail[i].id)
+    threadDetail.comments = commentsDetail;
+
+    for (let i = 0; i < threadDetail.comments.length; i += 1) {
+      threadDetail.comments[i].replies = threadReplies
+        .filter((reply) => reply.commentId === threadDetail.comments[i].id)
         .map((reply) => {
           const { commentId, ...replyDetail } = reply;
           return replyDetail;
