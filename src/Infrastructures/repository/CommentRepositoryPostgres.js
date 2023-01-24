@@ -51,7 +51,7 @@ class CommentRepositoryPostgres extends CommentRepository {
     const query = {
       text: `SELECT comments.id,
              comments.is_delete AS "isDelete",
-             comments.content AS content,
+             comments.content,
              comments.date,
              users.username
              FROM comments

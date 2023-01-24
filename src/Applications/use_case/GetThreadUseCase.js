@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-const DetailComment = require('../../Domains/comments/entities/DetailComment');
+// const DetailComment = require('../../Domains/comments/entities/DetailComment');
 const DetailThread = require('../../Domains/threads/entities/DetailThread');
 
 class GetThreadUseCase {
@@ -16,25 +16,33 @@ class GetThreadUseCase {
     threadDetail.comments = await this._commentRepository.getCommentByThareadId(threadId);
     const threadReplies = await this._replyRepository.getRepliesByThreadId(threadId);
 
-    // const commentsDetail = threadDetail.comments;
-    const commentsDetail = threadDetail.comments.map((comment) => {
-      comment.content = comment.isDelete === true ? '**komentar telah dihapus**' : comment.content;
-      const { isDelete, ...commentDetail } = comment;
-      return new DetailComment({ ...commentDetail, replies: [] });
-    });
+    threadDetail.comments = this._checkCommentsIsDeleted(threadDetail.comments);
+    threadDetail.comments = this._getRepliesForComments(threadDetail.comments, threadReplies);
 
-    threadDetail.comments = commentsDetail;
+    return new DetailThread(threadDetail);
+  }
 
-    for (let i = 0; i < threadDetail.comments.length; i += 1) {
-      threadDetail.comments[i].replies = threadReplies
-        .filter((reply) => reply.commentId === threadDetail.comments[i].id)
+  _checkCommentsIsDeleted(comments) {
+    for (let i = 0; i < comments.length; i += 1) {
+      comments[i].content = comments[i].isDelete ? '**komentar telah dihapus**' : comments[i].content;
+      delete comments[i].isDelete;
+    }
+    return comments;
+  }
+
+  _getRepliesForComments(comments, replies) {
+    for (let i = 0; i < comments.length; i += 1) {
+      const { id } = comments[i];
+      comments[i].replies = replies
+        .filter((reply) => reply.commentId === id)
         .map((reply) => {
           const { commentId, ...replyDetail } = reply;
+          replyDetail.content = replyDetail.isDelete ? '**balasan telah dihapus**' : replyDetail.content;
+          delete replyDetail.isDelete;
           return replyDetail;
         });
     }
-
-    return new DetailThread(threadDetail);
+    return comments;
   }
 }
 

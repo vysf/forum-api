@@ -1,7 +1,6 @@
 const AuthorizationError = require('../../Commons/exceptions/AuthorizationError');
 const NotFoundError = require('../../Commons/exceptions/NotFoundError');
 const AddedReply = require('../../Domains/replies/entities/AddedReply');
-const DetailReply = require('../../Domains/replies/entities/DetailReply');
 const ReplyRepository = require('../../Domains/replies/ReplyRepository');
 
 class ReplyRepositoryPostgres extends ReplyRepository {
@@ -29,12 +28,7 @@ class ReplyRepositoryPostgres extends ReplyRepository {
 
   async getRepliesByCommentId(commentId) {
     const query = {
-      text: `SELECT replies.id,
-             CASE
-                WHEN replies.is_delete = TRUE THEN '**balasan telah dihapus**' ELSE replies.content
-             END AS content,
-             replies.date,
-             users.username
+      text: `SELECT replies.id, replies.content, replies.date, users.username
              FROM replies
                 INNER JOIN users
                     ON replies.owner = users.id
@@ -50,10 +44,9 @@ class ReplyRepositoryPostgres extends ReplyRepository {
   async getRepliesByThreadId(threadId) {
     const query = {
       text: `SELECT replies.id,
-              CASE
-                WHEN replies.is_delete = TRUE THEN '**balasan telah dihapus**' ELSE replies.content
-              END AS content,
-              comments.id AS comment_id,
+              replies.is_delete AS "isDelete",
+              replies.content,
+              comments.id AS "commentId",
               replies.date,
               users.username
               FROM replies
@@ -67,7 +60,7 @@ class ReplyRepositoryPostgres extends ReplyRepository {
     };
 
     const result = await this._pool.query(query);
-    return result.rows.map((data) => new DetailReply({ ...data, commentId: data.comment_id }));
+    return result.rows;
   }
 
   async checkReplyIsExist(threadId, commentId, replyId) {

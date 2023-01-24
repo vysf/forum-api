@@ -99,7 +99,7 @@ describe('ReplyRepositoryPostgres', () => {
 
       const expectedReplies = [
         { ...firstReply, username: 'Jhon' },
-        { ...secondReply, username: 'Jene', content: '**balasan telah dihapus**' },
+        { ...secondReply, username: 'Jene' },
       ];
       secondReply.isDelete = true;
       await RepliesTableTestHelper.addReply({ ...secondReply, owner: userId, commentId: 'comment-1' });
@@ -128,6 +128,7 @@ describe('ReplyRepositoryPostgres', () => {
         date: '10-10-2021',
         content: 'reply pada komen 1',
         commentId: 'comment-1',
+        isDelete: false,
       };
 
       const secondReply = {
@@ -135,13 +136,14 @@ describe('ReplyRepositoryPostgres', () => {
         date: '11-10-2021',
         content: 'reply pada komen 2',
         commentId: 'comment-2',
+        isDelete: true,
       };
 
       const expectedReplies = [
         { ...firstReply, username: 'Jhon' },
-        { ...secondReply, username: 'Jene', content: '**balasan telah dihapus**' },
+        { ...secondReply, username: 'Jene' },
       ];
-      secondReply.isDelete = true;
+      // secondReply.isDelete = true;
       await RepliesTableTestHelper.addReply({ ...secondReply, owner: 'user-2' });
       await RepliesTableTestHelper.addReply({ ...firstReply, owner: 'user-1' });
 
