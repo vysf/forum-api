@@ -1,1 +1,21 @@
-test
+testtest
+```json
+{
+    "status":"success",
+	"message":"Record berhasil dibuat. Bila hostname belum bisa digunakan tunggu 1 jam untuk proses propagate.",
+	"data":
+    	{
+            "addedDNS":
+				[
+					{
+						"hostname":"fresh-fox-9.a276.dcdg.xyz",
+						"ip":"34.236.249.17"
+					},
+					{
+						"hostname":"www.fresh-fox-9.a276.dcdg.xyz",
+						"ip":"34.236.249.17"
+					}
+				]
+		}
+}
+```
